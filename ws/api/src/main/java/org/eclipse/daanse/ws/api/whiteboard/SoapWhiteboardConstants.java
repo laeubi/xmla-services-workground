@@ -13,6 +13,9 @@
 */
 package org.eclipse.daanse.ws.api.whiteboard;
 
+import org.eclipse.daanse.ws.api.whiteboard.prototypes.EndpointSelector;
+
+@EndpointSelector("(wstype=echo)")
 public class SoapWhiteboardConstants {
 
     private SoapWhiteboardConstants() {
@@ -20,6 +23,7 @@ public class SoapWhiteboardConstants {
     }
 
     public static final String SOAP = "osgi.soap";
+    public static final String SOAP_PREFIX = SOAP+".";
     public static final String SOAP_ENDPOINT_PREFIX = SOAP + ".endpoint.";
     public static final String SOAP_ENDPOINT_IMPLEMENTOR = SOAP_ENDPOINT_PREFIX + "implementor";
     public static final String SOAP_ENDPOINT_PATH = SOAP_ENDPOINT_PREFIX + "contextpath";

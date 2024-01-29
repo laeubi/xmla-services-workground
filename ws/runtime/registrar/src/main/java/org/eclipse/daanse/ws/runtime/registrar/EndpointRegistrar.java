@@ -31,6 +31,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.PrototypeServiceFactory;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.namespace.implementation.ImplementationNamespace;
@@ -121,7 +122,7 @@ public class EndpointRegistrar {
 		endpointRegistrations.values().stream().forEach(EndpointRegistration::refresh);
 	}
 
-	private final class EndpointRegistration implements ServiceFactory<Endpoint> {
+	private final class EndpointRegistration implements PrototypeServiceFactory<Endpoint> {
 
 		private Object implementor;
 		private ServiceRegistration<?> registration;
