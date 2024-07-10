@@ -137,7 +137,8 @@ public class EndpointRegistrar implements WebserviceServiceRuntime {
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	public void addHandler(Handler<? extends MessageContext> handler, Map<String, ?> properties)
 			throws InvalidSyntaxException {
-		Object epSelect = ""; // FIXME properties.get(SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT);
+		Object epSelect = properties.get(SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT);
+		System.out.println(">> new handler " + handler + " (" + properties + ")");
 		logger.debug("ADD handler={}, epSelect = {}, properties={}", handler, epSelect, properties);
 		if (epSelect instanceof String fs) {
 			try {
@@ -262,7 +263,7 @@ public class EndpointRegistrar implements WebserviceServiceRuntime {
 			Dictionary<String, Object> properties = implementorReference.getProperties();
 			Enumeration<String> keys = properties.keys();
 			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
+				String key = keys.nextElement();
 				if (key.startsWith(".")) {
 					// do not propagate secret properties
 					continue;
