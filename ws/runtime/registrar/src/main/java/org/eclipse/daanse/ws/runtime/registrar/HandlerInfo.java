@@ -15,15 +15,123 @@
 package org.eclipse.daanse.ws.runtime.registrar;
 
 import java.util.Comparator;
-import java.util.Map.Entry;
+import java.util.Dictionary;
+import java.util.Objects;
 
-import org.osgi.framework.Filter;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.dto.ServiceReferenceDTO;
+import org.osgi.service.jakartaws.runtime.dto.FailedHandlerDTO;
+import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
+import org.osgi.service.jakartaws.whiteboard.SoapWhiteboardConstants;
 
 import jakarta.xml.ws.handler.Handler;
+import jakarta.xml.ws.handler.MessageContext;
 
-final record HandlerInfo(Filter filter, int priority) {
-	
-	static final Comparator<Entry<Handler<?>, HandlerInfo>> SORT_BY_PRIORITY = Comparator
-			.comparing(Entry::getValue, Comparator.comparingInt(HandlerInfo::priority).reversed());
+final class HandlerInfo {
+
+	static final Comparator<HandlerInfo> SORT_BY_PRIORITY = Comparator.comparingInt(HandlerInfo::getPriority)
+			.reversed();
+	private final ServiceReference<Handler<? extends MessageContext>> reference;
+	private final int priority;
+	private BundleContext bundleContext;
+	private Handler<? extends MessageContext> service;
+	private Exception lookupError;
+	private Exception filterError;
+
+	HandlerInfo(ServiceReference<Handler<? extends MessageContext>> reference, BundleContext bundleContext) {
+		this.reference = reference;
+		this.bundleContext = bundleContext;
+		Integer p = (Integer) reference.getProperty(Constants.SERVICE_RANKING);
+		if (p == null) {
+			this.priority = 0;
+		} else {
+			this.priority = p.intValue();
+		}
+	}
+
+	synchronized boolean matches(Dictionary<String, ?> properties) {
+		Object epSelect = reference.getProperty(SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT);
+		if (epSelect == null) {
+			// if there is no selector this handler matches everywhere
+			return true;
+		}
+		if (epSelect instanceof String fs) {
+			try {
+				return FrameworkUtil.createFilter(fs).match(properties);
+			} catch (InvalidSyntaxException | RuntimeException e) {
+				filterError = e;
+			}
+		} else {
+			filterError = new IllegalArgumentException(
+					SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT + " must be of type string");
+		}
+		return false;
+	}
+
+	int getPriority() {
+		return priority;
+	}
+
+	synchronized void dispose() {
+		if (service != null) {
+			try {
+				bundleContext.ungetService(reference);
+			} finally {
+				service = null;
+				lookupError = null;
+				filterError = null;
+			}
+		}
+	}
+
+	synchronized Handler<? extends MessageContext> fetchHandler() {
+		if (service == null) {
+			try {
+				service = Objects.requireNonNull(bundleContext.getService(reference));
+			} catch (RuntimeException e) {
+				lookupError = e;
+			}
+		}
+		return service;
+	}
+
+	synchronized HandlerDTO getDto() {
+		if (service == null || lookupError != null || filterError != null) {
+			// if the service is null this means the handler is never fetched and therefore
+			// unbound, or the fetching has failed or this instance was disposed!
+			return null;
+		}
+		HandlerDTO dto = new HandlerDTO();
+		dto.serviceReference = reference.adapt(ServiceReferenceDTO.class);
+		return dto;
+	}
+
+	synchronized FailedHandlerDTO getFailedDto() {
+		if (filterError != null) {
+			FailedHandlerDTO dto = new FailedHandlerDTO();
+			dto.failureCode = FailedHandlerDTO.FAILURE_REASON_INVALID_FILTER;
+			dto.failureMessage = filterError.getMessage();
+			dto.serviceReference = reference.adapt(ServiceReferenceDTO.class);
+			return dto;
+		}
+		if (lookupError != null) {
+			FailedHandlerDTO dto = new FailedHandlerDTO();
+			dto.failureCode = FailedHandlerDTO.FAILURE_REASON_SERVICE_NOT_GETTABLE;
+			dto.failureMessage = lookupError.getMessage();
+			dto.serviceReference = reference.adapt(ServiceReferenceDTO.class);
+			return dto;
+		}
+		if (service == null) {
+			FailedHandlerDTO dto = new FailedHandlerDTO();
+			dto.failureCode = FailedHandlerDTO.FAILURE_REASON_NO_MATCHING_ENDPOINT;
+			dto.serviceReference = reference.adapt(ServiceReferenceDTO.class);
+			return dto;
+		}
+		return null;
+	}
 
 }
