@@ -15,7 +15,6 @@
 package org.eclipse.daanse.ws.runtime.registrar;
 
 import java.util.Comparator;
-import java.util.Dictionary;
 import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
@@ -53,7 +52,7 @@ final class HandlerInfo {
 		}
 	}
 
-	synchronized boolean matches(Dictionary<String, ?> properties) {
+	synchronized boolean matches(ServiceReference<?> endpointImplementor) {
 		Object epSelect = reference.getProperty(SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT);
 		if (epSelect == null) {
 			// if there is no selector this handler matches everywhere
@@ -61,7 +60,7 @@ final class HandlerInfo {
 		}
 		if (epSelect instanceof String fs) {
 			try {
-				return FrameworkUtil.createFilter(fs).match(properties);
+				return FrameworkUtil.createFilter(fs).match(endpointImplementor);
 			} catch (InvalidSyntaxException | RuntimeException e) {
 				filterError = e;
 			}
@@ -77,14 +76,16 @@ final class HandlerInfo {
 	}
 
 	synchronized void dispose() {
-		if (service != null) {
-			try {
+		try {
+			if (service != null) {
 				bundleContext.ungetService(reference);
-			} finally {
-				service = null;
-				lookupError = null;
-				filterError = null;
 			}
+		} catch (RuntimeException e) {
+			// nothing we can do here...
+		} finally {
+			service = null;
+			lookupError = null;
+			filterError = null;
 		}
 	}
 
