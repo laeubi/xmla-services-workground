@@ -47,7 +47,7 @@ public class GenericPublisher implements EndpointPublisher {
 
 	@Override
 	public PublishedEndpoint publishEndpoint(Endpoint endpoint) {
-		System.out.println("GenericPublisher.publishEndpoint()"+endpoint);
+		System.out.println("GenericPublisher.publishEndpoint(" + endpoint + ")");
 		Map<String, Object> properties = endpoint.getProperties();
 		Object epAddress = properties.get(SoapWhiteboardConstants.SOAP_ENDPOINT_ADDRESS);
 		if (epAddress instanceof String address && !address.isEmpty()) {

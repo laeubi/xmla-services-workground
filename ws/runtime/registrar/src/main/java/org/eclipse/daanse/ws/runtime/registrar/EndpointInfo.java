@@ -19,7 +19,6 @@ import org.osgi.service.component.propertytypes.ServiceRanking;
 import org.osgi.service.jakartaws.runtime.dto.EndpointDTO;
 import org.osgi.service.jakartaws.runtime.dto.FailedEndpointDTO;
 import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
-import org.osgi.service.jakartaws.whiteboard.SoapWhiteboardConstants;
 
 import jakarta.xml.ws.Endpoint;
 import jakarta.xml.ws.handler.Handler;
@@ -135,10 +134,6 @@ public class EndpointInfo {
 				// do not propagate secret properties
 				continue;
 			}
-			if (key.startsWith(SoapWhiteboardConstants.SOAP)) {
-				// do not propagate SOAP WS properties
-				continue;
-			}
 			hashtable.put(key, properties.get(key));
 		}
 		return hashtable;
@@ -154,7 +149,7 @@ public class EndpointInfo {
 		try {
 			publishedEndpoint = endpointPublisherMap.entrySet().stream()
 					.sorted(Comparator.comparing(Entry::getValue, Comparator.comparingInt(ServiceRanking::value)))
-					.map(Entry::getKey).map(publisher -> publisher.publishEndpoint(endpoint)).filter(Objects::nonNull)
+					.map(Entry::getKey).map(publisher -> publisher.publishEndpoint(ep)).filter(Objects::nonNull)
 					.findFirst().orElseThrow(() -> new IllegalStateException("No applicable EndpointPublisher"));
 		} catch (RuntimeException e) {
 			publishError = e;
