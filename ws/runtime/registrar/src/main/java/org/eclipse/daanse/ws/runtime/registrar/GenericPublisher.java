@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceRanking;
-import org.osgi.service.jakartaws.whiteboard.SoapWhiteboardConstants;
+import org.osgi.service.jakartaws.whiteboard.WebserviceWhiteboardConstants;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 
@@ -49,7 +49,7 @@ public class GenericPublisher implements EndpointPublisher {
 	public PublishedEndpoint publishEndpoint(Endpoint endpoint) {
 		System.out.println("GenericPublisher.publishEndpoint(" + endpoint + ")");
 		Map<String, Object> properties = endpoint.getProperties();
-		Object epAddress = properties.get(SoapWhiteboardConstants.SOAP_ENDPOINT_ADDRESS);
+		Object epAddress = properties.get(WebserviceWhiteboardConstants.WEBSERVICE_ENDPOINT_ADDRESS);
 		if (epAddress instanceof String address && !address.isEmpty()) {
 			logger.info("Registering {} with generic publisher and address {}", endpoint, address);
 			logger.debug(">>> PUBLISH EP @ " + epAddress + " properties=" + properties);

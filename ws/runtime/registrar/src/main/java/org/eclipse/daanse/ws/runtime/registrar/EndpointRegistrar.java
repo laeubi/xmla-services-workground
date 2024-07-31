@@ -43,7 +43,7 @@ import org.osgi.service.jakartaws.runtime.dto.FailedEndpointDTO;
 import org.osgi.service.jakartaws.runtime.dto.FailedHandlerDTO;
 import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
 import org.osgi.service.jakartaws.runtime.dto.RuntimeDTO;
-import org.osgi.service.jakartaws.whiteboard.SoapWhiteboardConstants;
+import org.osgi.service.jakartaws.whiteboard.WebserviceWhiteboardConstants;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 
@@ -52,8 +52,8 @@ import jakarta.xml.ws.handler.MessageContext;
 
 @Component(immediate = true, service = { WebserviceServiceRuntime.class })
 @Capability(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, //
-		name = SoapWhiteboardConstants.SOAP, //
-		version = SoapWhiteboardConstants.SOAP_SPECIFICATION_VERSION)
+		name = WebserviceWhiteboardConstants.WEBSERVICE, //
+		version = WebserviceWhiteboardConstants.WEBSERVICE_SPECIFICATION_VERSION)
 public class EndpointRegistrar implements WebserviceServiceRuntime {
 
 	private Logger logger;
@@ -103,7 +103,7 @@ public class EndpointRegistrar implements WebserviceServiceRuntime {
 		updateAll();
 	}
 
-	@Reference(service = AnyService.class, target = "(" + SoapWhiteboardConstants.SOAP_ENDPOINT_IMPLEMENTOR
+	@Reference(service = AnyService.class, target = "(" + WebserviceWhiteboardConstants.WEBSERVICE_ENDPOINT_IMPLEMENTOR
 			+ "=true)", cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	public void bindEndpointImplementor(ServiceReference<?> endpointImplementorReference) {
 		System.out.println("EndpointRegistrar.bindEndpointImplementor()");

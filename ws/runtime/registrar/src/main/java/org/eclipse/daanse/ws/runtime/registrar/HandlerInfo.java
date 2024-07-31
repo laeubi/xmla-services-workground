@@ -25,7 +25,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.dto.ServiceReferenceDTO;
 import org.osgi.service.jakartaws.runtime.dto.FailedHandlerDTO;
 import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
-import org.osgi.service.jakartaws.whiteboard.SoapWhiteboardConstants;
+import org.osgi.service.jakartaws.whiteboard.WebserviceWhiteboardConstants;
 
 import jakarta.xml.ws.handler.Handler;
 import jakarta.xml.ws.handler.MessageContext;
@@ -53,7 +53,7 @@ final class HandlerInfo {
 	}
 
 	synchronized boolean matches(ServiceReference<?> endpointImplementor) {
-		Object epSelect = reference.getProperty(SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT);
+		Object epSelect = reference.getProperty(WebserviceWhiteboardConstants.WEBSERVICE_ENDPOINT_SELECT);
 		if (epSelect == null) {
 			// if there is no selector this handler matches everywhere
 			return true;
@@ -66,7 +66,7 @@ final class HandlerInfo {
 			}
 		} else {
 			filterError = new IllegalArgumentException(
-					SoapWhiteboardConstants.SOAP_ENDPOINT_SELECT + " must be of type string");
+					WebserviceWhiteboardConstants.WEBSERVICE_ENDPOINT_SELECT + " must be of type string");
 		}
 		return false;
 	}
