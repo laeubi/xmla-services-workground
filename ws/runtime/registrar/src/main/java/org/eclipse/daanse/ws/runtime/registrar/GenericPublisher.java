@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceRanking;
-import org.osgi.service.jakartaws.whiteboard.WebserviceWhiteboardConstants;
+import org.osgi.service.jakarta.xml.ws.whiteboard.WebserviceWhiteboardConstants;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
 

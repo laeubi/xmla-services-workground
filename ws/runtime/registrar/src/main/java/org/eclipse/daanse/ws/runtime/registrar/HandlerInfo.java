@@ -23,9 +23,9 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.dto.ServiceReferenceDTO;
-import org.osgi.service.jakartaws.runtime.dto.FailedHandlerDTO;
-import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
-import org.osgi.service.jakartaws.whiteboard.WebserviceWhiteboardConstants;
+import org.osgi.service.jakarta.xml.ws.runtime.dto.FailedHandlerDTO;
+import org.osgi.service.jakarta.xml.ws.runtime.dto.HandlerDTO;
+import org.osgi.service.jakarta.xml.ws.whiteboard.WebserviceWhiteboardConstants;
 
 import jakarta.xml.ws.handler.Handler;
 import jakarta.xml.ws.handler.MessageContext;

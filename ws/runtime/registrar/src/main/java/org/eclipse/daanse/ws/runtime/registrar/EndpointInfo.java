@@ -16,9 +16,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.dto.ServiceReferenceDTO;
 import org.osgi.service.component.propertytypes.ServiceRanking;
-import org.osgi.service.jakartaws.runtime.dto.EndpointDTO;
-import org.osgi.service.jakartaws.runtime.dto.FailedEndpointDTO;
-import org.osgi.service.jakartaws.runtime.dto.HandlerDTO;
+import org.osgi.service.jakarta.xml.ws.runtime.dto.EndpointDTO;
+import org.osgi.service.jakarta.xml.ws.runtime.dto.FailedEndpointDTO;
+import org.osgi.service.jakarta.xml.ws.runtime.dto.HandlerDTO;
 
 import jakarta.xml.ws.Endpoint;
 import jakarta.xml.ws.handler.Handler;

@@ -68,7 +68,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.service.jakartaws</artifactId>
+			<artifactId>org.osgi.service.jakarta.xml.ws</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
